@@ -1,3 +1,6 @@
+# Credit to Cecil Curry from StackOverflow - 
+# https://stackoverflow.com/users/2809027/cecil-curry
+
 # ------------- Check File Path Functions --------------
 import errno, os, tempfile, sys
 
