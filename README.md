@@ -1,4 +1,4 @@
-![](example-2.gif)
+![](WebWizard/example-2.gif)
 
 # WebWizard
 
