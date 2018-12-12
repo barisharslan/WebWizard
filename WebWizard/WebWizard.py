@@ -2,10 +2,10 @@ import PySimpleGUI as sg
 import filenamevalidation as fnv
 import os
 import subprocess
+DETACHED_PROCESS = 0x00000008
 
 # -------------- File Boilerplates ---------------------------
-html_boiler = """
-<!DOCTYPE html>
+html_boiler = """<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -45,7 +45,7 @@ class MyFile:
     try:
       # check file destination
       if os.path.isfile(self.file_path + ".html"):
-        # if file already exists, prompt user if they want to overwrite the file                       
+        # if file already exists, prompt user if they want to overwrite the file
         shouldOverwrite = sg.PopupOKCancel('File already exists. Okay to overwrite?')
         if shouldOverwrite == "Cancel":
           # user cancels overwrite request
@@ -61,7 +61,11 @@ class MyFile:
 
   def launchFile(self, path_program):
     sg.Popup("Launching file...")
-    subprocess.call([path_program, self.file_path + ".html"])
+    if self.create_css:
+      subprocess.Popen([path_program, self.file_path + ".css"],creationflags=DETACHED_PROCESS)
+    if self.create_js:
+      subprocess.Popen([path_program, self.file_path + ".js"],creationflags=DETACHED_PROCESS)
+    subprocess.Popen([path_program, self.file_path + ".html"],creationflags=DETACHED_PROCESS)
   
   def createFile(self, path_program):
     # create html file at directory/file_name
@@ -99,7 +103,7 @@ def checkLaunchApp():
   while not os.path.isfile(data):
     with open("launch.txt", "r") as f:
       data = f.read()
-  sg.Popup("Your launch program exists!")
+  # sg.Popup("Your launch program exists!")
   # then returns string of launch app's directory
   return data
 
@@ -108,8 +112,10 @@ def checkLaunchApp():
 sg.ChangeLookAndFeel('TealMono')
 sg.SetOptions(element_padding=(1, 1), text_color="black")
 
+
+
 layout =  [
-          [sg.Text('WebWizard', size=(10, 2), font=('Fixedsys', 20),
+          [sg.Text('WebWizard', size=(15, 1), font=('Fixedsys', 20),
                    justification='center')],
           [sg.Text('Name', size=(10, 1), font=('Fixedsys', 14),
                    justification='left'),
@@ -134,7 +140,7 @@ if not os.path.isfile("launch.txt"):
 
 path_to_program = checkLaunchApp()
 
-window = sg.Window('Web Wizard').Layout(layout)
+window = sg.Window('Web Wizard', icon="icon.ico").Layout(layout)
 
 while True:
   event, values = window.Read()
@@ -150,5 +156,3 @@ while True:
   
 
 window.Close()
-
-
